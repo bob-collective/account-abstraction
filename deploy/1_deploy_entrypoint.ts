@@ -4,16 +4,17 @@ import { Create2Factory } from '../src/Create2Factory'
 import { ethers } from 'hardhat'
 
 const deployEntryPoint: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const provider = ethers.provider
-  const from = await provider.getSigner().getAddress()
-  await new Create2Factory(ethers.provider).deployFactory()
+  const from =  process.env["PRIVATE_KEY"];
+  if (from === undefined) {
+    throw new Error("Please set the PRIVATE_KEY env variable.");
+  }
 
   const ret = await hre.deployments.deploy(
     'EntryPoint', {
-      from,
+      from: from,
       args: [],
       gasLimit: 6e6,
-      deterministicDeployment: true
+      deterministicDeployment: false
     })
   console.log('==entrypoint addr=', ret.address)
 /*

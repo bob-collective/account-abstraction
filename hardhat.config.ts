@@ -7,6 +7,7 @@ import '@nomiclabs/hardhat-etherscan'
 import 'solidity-coverage'
 
 import * as fs from 'fs'
+import "@nomiclabs/hardhat-etherscan";
 
 const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`
 let mnemonic = 'test '.repeat(11) + 'junk'
@@ -54,14 +55,39 @@ const config: HardhatUserConfig = {
     localgeth: { url: 'http://localgeth:8545' },
     goerli: getNetwork('goerli'),
     sepolia: getNetwork('sepolia'),
-    proxy: getNetwork1('http://localhost:8545')
+    proxy: getNetwork1('http://localhost:8545'),
+    bob: { url: 'https://l2-fluffy-bob-7mjgi9pmtg.t.conduit.xyz' },
+    sepoliaBob: { url: 'https://l2-puff-bob-jznbxtoq7h.t.conduit.xyz' }
   },
   mocha: {
     timeout: 10000
   },
 
+  defaultNetwork: 'bob',
+
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY
+    apiKey: {
+      bob: "abc",
+      sepoliaBob: "abc", // needs to exist but can be anything
+    },
+    customChains: [
+      {
+        network: "bob",
+        chainId: 901,
+        urls: {
+          apiURL: "https://explorerl2-fluffy-bob-7mjgi9pmtg.t.conduit.xyz/api",
+          browserURL: "https://explorerl2-fluffy-bob-7mjgi9pmtg.t.conduit.xyz/"
+        }
+      },
+      {
+        network: "sepoliaBob",
+        chainId: 111,
+        urls: {
+          apiURL: "https://explorerl2new-puff-bob-jznbxtoq7h.t.conduit.xyz/api",
+          browserURL: "https://explorerl2new-puff-bob-jznbxtoq7h.t.conduit.xyz/"
+        }
+      }
+    ]
   }
 
 }
